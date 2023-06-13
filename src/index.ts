@@ -1,3 +1,1 @@
-const message: string = "Hello, world!";
-
-console.log(message);
+// chapter${i}.ts に書いているので、index.tsは使わない
