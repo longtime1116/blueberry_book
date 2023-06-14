@@ -139,26 +139,26 @@ World`
   } else {
     console.log("ここに入る");
   }
-  console.log("hoge" === 10); // false
+  //console.log("hoge" === 10); // false
   //const command: string = "greet";
   const command: number = 10;
-  switch (command) {
-    case "greet": // 式が来る
-      console.log("こんにちは");
-      break;
-    case 5 + 5:
-      console.log("数値");
-      break;
+  //switch (command) {
+  //  case "greet": // 式が来る
+  //    console.log("こんにちは");
+  //    break;
+  //  case 5 + 5:
+  //    console.log("数値");
+  //    break;
 
-    case "greet":
-      console.log("こんにちは");
-      break;
-    case "cat":
-      console.log("猫");
-      break;
-    default:
-      console.log("デフォ");
-  }
+  //  case "greet":
+  //    console.log("こんにちは");
+  //    break;
+  //  case "cat":
+  //    console.log("猫");
+  //    break;
+  //  default:
+  //    console.log("デフォ");
+  //}
   // FizzBuzz
   for (let i = 1; i < 16; i++) {
     if (i % 15 === 0) {
