@@ -41,116 +41,157 @@ namespace Chapter3 {
     //  const message = fizzBuzzObj[String(i % 15)] || String(i);
     //  console.log(message);
     //}
-  }
-  const obj5 = {
-    foo: 100,
-    bar: 200,
-  };
-  const obj6 = {
-    foo: -99,
-  };
-  const obj7 = {
-    ...obj5,
-    ...obj6,
-    baz: 100,
-  };
-  console.log(obj7);
-  const obj8 = {
-    name: "Foo",
-  };
-  const obj9 = obj8;
-  const obj10 = { ...obj8 };
-  obj8.name = "Bar";
-  console.log(obj8.name, obj9.name, obj10.name);
-  const obj11 = {
-    obj: { num: 100 },
-  };
-  const obj12 = { ...obj11 };
-  obj11.obj.num++;
-  // deep copy されているわけではないので、同じ値になっている
-  console.log(obj11, obj12);
-  const obj13: {
-    foo: number;
-    bar: string;
-  } = {
-    foo: 100,
-    bar: "hoge",
-  };
-  console.log(obj13);
-  // type文
-  type FooBarObj = {
-    foo: number;
-    bar: string;
-  };
-  const obj14: FooBarObj = {
-    foo: 10,
-    bar: "Hello, world!",
-  };
-  console.log(obj14);
-  // type は既にある型に別名を付けているだけ。
-  // 従って、↓でUserAge型をuserId型に代入できてしまう！！！
-  type Age = number;
-  type UserId = number;
-  let age: Age = 10;
-  let userId: UserId = 10000;
-  age = userId;
-  console.log(age);
+    const obj5 = {
+      foo: 100,
+      bar: 200,
+    };
+    const obj6 = {
+      foo: -99,
+    };
+    const obj7 = {
+      ...obj5,
+      ...obj6,
+      baz: 100,
+    };
+    console.log(obj7);
+    const obj8 = {
+      name: "Foo",
+    };
+    const obj9 = obj8;
+    const obj10 = { ...obj8 };
+    obj8.name = "Bar";
+    console.log(obj8.name, obj9.name, obj10.name);
+    const obj11 = {
+      obj: { num: 100 },
+    };
+    const obj12 = { ...obj11 };
+    obj11.obj.num++;
+    // deep copy されているわけではないので、同じ値になっている
+    console.log(obj11, obj12);
+    const obj13: {
+      foo: number;
+      bar: string;
+    } = {
+      foo: 100,
+      bar: "hoge",
+    };
+    console.log(obj13);
+    // type文
+    type FooBarObj = {
+      foo: number;
+      bar: string;
+    };
+    const obj14: FooBarObj = {
+      foo: 10,
+      bar: "Hello, world!",
+    };
+    console.log(obj14);
+    // type は既にある型に別名を付けているだけ。
+    // 従って、↓でUserAge型をuserId型に代入できてしまう！！！
+    type Age = number;
+    type UserId = number;
+    let age: Age = 10;
+    let userId: UserId = 10000;
+    age = userId;
+    console.log(age);
 
-  // objectの型の場合のみ、interface が使える。
-  // 基本的に現在ではtypeを使っておけば問題ないようだ
-  interface FooObj {
-    foo: number;
-  }
-  const obj15: FooObj = {
-    foo: 15,
-  };
-  // インデックスシグネチャ
-  type PriceData = {
-    [key: string]: number;
-  };
-  const priceData: PriceData = {
-    apple: 220,
-    coffee: 120,
-  };
-  priceData.bento = 250;
-  console.log(priceData);
-  // ← これは undefined になるが、number型であるべきなので矛盾する。すなわち、インデックスシグネチャは型安全性を破壊してしまうと言える。
-  // Mapを使えば、number|undefined というユニオン型をvalueが取るので、型安全性が破壊されない。
-  console.log(priceData.banana);
+    // objectの型の場合のみ、interface が使える。
+    // 基本的に現在ではtypeを使っておけば問題ないようだ
+    interface FooObj {
+      foo: number;
+    }
+    const obj15: FooObj = {
+      foo: 15,
+    };
+    // インデックスシグネチャ
+    type PriceData = {
+      [key: string]: number;
+    };
+    const priceData: PriceData = {
+      apple: 220,
+      coffee: 120,
+    };
+    priceData.bento = 250;
+    console.log(priceData);
+    // ← これは undefined になるが、number型であるべきなので矛盾する。すなわち、インデックスシグネチャは型安全性を破壊してしまうと言える。
+    // Mapを使えば、number|undefined というユニオン型をvalueが取るので、型安全性が破壊されない。
+    console.log(priceData.banana);
 
-  type MyObj = {
-    foo: boolean;
-    bar: boolean;
-    baz?: number;
-  };
-  const obj16: MyObj = { foo: false, bar: true };
-  const obj17: MyObj = { foo: false, bar: true, baz: 4 }; // マウスオンすると、number|undefined
-  console.log(obj16.baz);
-  console.log(obj17.baz);
-  // console.log(obj17.baz * 100); //これはエラーになる
-  if (obj17.baz !== undefined) {
-    console.log(obj17.baz * 100); // これならエラーにならない
-  }
-  type MyObj2 = {
-    readonly foo: boolean;
-  };
-  const obj18: MyObj2 = {
-    foo: true,
-  };
-  // obj18.foo = false; // エラーになる
+    type MyObj = {
+      foo: boolean;
+      bar: boolean;
+      baz?: number;
+    };
+    const obj16: MyObj = { foo: false, bar: true };
+    const obj17: MyObj = { foo: false, bar: true, baz: 4 }; // マウスオンすると、number|undefined
+    console.log(obj16.baz);
+    console.log(obj17.baz);
+    // console.log(obj17.baz * 100); //これはエラーになる
+    //if (obj17.baz !== undefined) {
+    //  console.log(obj17.baz * 100); // これならエラーにならない
+    //}
+    type MyObj2 = {
+      readonly foo: boolean;
+    };
+    const obj18: MyObj2 = {
+      foo: true,
+    };
+    // obj18.foo = false; // エラーになる
 
-  // Tはnumber型。
-  const num: number = 0;
-  type T = typeof num;
-  const foo: T = 100;
-  type T2 = typeof obj18;
-  // typeof を使うのは、自作の型ではなく値が最上位の事実としてくる場合。
-  // as const はここまでで出てきていないが、変数宣言の時につけるとdeepにreadonly化してくれる。typeにつけるreadonlyはshallow。
-  const commandList = ["attack", "defend", "run"] as const;
-  type Command = (typeof commandList)[number];
-  const command: Command = "defend";
-  console.log(command);
-  // これをtypeの定義からすると、二回書くことになる
-  type Command2 = "attack" | "defend" | "run";
-  const commandList2: Command2[] = ["attack", "defend", "run"];
+    // Tはnumber型。
+    const num: number = 0;
+    type T = typeof num;
+    const foo: T = 100;
+    type T2 = typeof obj18;
+    // typeof を使うのは、自作の型ではなく値が最上位の事実としてくる場合。
+    // as const はここまでで出てきていないが、変数宣言の時につけるとdeepにreadonly化してくれる。typeにつけるreadonlyはshallow。
+    const commandList = ["attack", "defend", "run"] as const;
+    type Command = (typeof commandList)[number];
+    const command: Command = "defend";
+    console.log(command);
+    // これをtypeの定義からすると、二回書くことになる
+    type Command2 = "attack" | "defend" | "run";
+    const commandList2: Command2[] = ["attack", "defend", "run"];
+
+    // 部分型
+    type User = {
+      name: string;
+      age: number;
+    };
+    type Creator = {
+      name: string;
+      age: number;
+      penName: string;
+    };
+    const creator = {
+      name: "Murakami",
+      age: 60,
+      penName: "Haru",
+    };
+    // 構造的部分型。CreatorはUserの部分型なので、代入可能。たまたま一致しているだけでも部分型とみなす。
+    // なお、世の中の他の言語では、名前的部分型というものが多い。明示的に宣言されたものだけが部分型としてみなされる。
+    const user: User = creator;
+    console.log(user);
+    // 明示的に作ろうとするとコンパイルエラーになるが、型安全性の観点からのエラーではない！
+    // なぜ後からcreatorをUser型の変数に入れてもエラーにならないかというと、creatorを別の用途でも使うが、たまたまUserの側面も持っているからOK、みたいな解釈をされるから・・・。
+    //const user2: User = { name: "Murakami", age: 70, penName: "Ryu" };
+
+    // 構造的部分型を成す条件は、プロパティが包含されていること。Tが持つプロパティは全てSに存在する。その各プロパティについて、Sにおけるそのプロパティの方は、Tのそれの部分型になっている。
+    type UserPair = {
+      member1: User;
+      member2: User;
+    };
+    type CreatorPair = {
+      member1: Creator;
+      member2: Creator;
+    };
+    const member1: Creator = { name: "A", age: 10, penName: "AA" };
+    const member2: Creator = { name: "B", age: 20, penName: "BB" };
+    const creatorPair: CreatorPair = {
+      member1,
+      member2,
+    };
+    const userPair: UserPair = creatorPair;
+    console.log(userPair);
+  }
 }
