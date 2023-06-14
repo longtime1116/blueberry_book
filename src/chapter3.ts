@@ -117,4 +117,40 @@ namespace Chapter3 {
   // ← これは undefined になるが、number型であるべきなので矛盾する。すなわち、インデックスシグネチャは型安全性を破壊してしまうと言える。
   // Mapを使えば、number|undefined というユニオン型をvalueが取るので、型安全性が破壊されない。
   console.log(priceData.banana);
+
+  type MyObj = {
+    foo: boolean;
+    bar: boolean;
+    baz?: number;
+  };
+  const obj16: MyObj = { foo: false, bar: true };
+  const obj17: MyObj = { foo: false, bar: true, baz: 4 }; // マウスオンすると、number|undefined
+  console.log(obj16.baz);
+  console.log(obj17.baz);
+  // console.log(obj17.baz * 100); //これはエラーになる
+  if (obj17.baz !== undefined) {
+    console.log(obj17.baz * 100); // これならエラーにならない
+  }
+  type MyObj2 = {
+    readonly foo: boolean;
+  };
+  const obj18: MyObj2 = {
+    foo: true,
+  };
+  // obj18.foo = false; // エラーになる
+
+  // Tはnumber型。
+  const num: number = 0;
+  type T = typeof num;
+  const foo: T = 100;
+  type T2 = typeof obj18;
+  // typeof を使うのは、自作の型ではなく値が最上位の事実としてくる場合。
+  // as const はここまでで出てきていないが、変数宣言の時につけるとdeepにreadonly化してくれる。typeにつけるreadonlyはshallow。
+  const commandList = ["attack", "defend", "run"] as const;
+  type Command = (typeof commandList)[number];
+  const command: Command = "defend";
+  console.log(command);
+  // これをtypeの定義からすると、二回書くことになる
+  type Command2 = "attack" | "defend" | "run";
+  const commandList2: Command2[] = ["attack", "defend", "run"];
 }
