@@ -195,3 +195,35 @@ namespace Chapter3 {
     console.log(userPair);
   }
 }
+namespace Chapter3_4 {
+  // シンプルな例
+  type User<T> = {
+    name: string;
+    child: T;
+  };
+  const bloodTypeList = ["A", "B", "O", "AB"] as const;
+  type BloodType = (typeof bloodTypeList)[number];
+  type Human = {
+    name: string;
+    bloodType: BloodType;
+  };
+  type Animal = {
+    name: string;
+    species: string;
+  };
+  type HasName = {
+    name: string;
+  };
+  // "A extends B" は、「AはBの部分型でなければならない」という制約。
+  // "Parent = Human" は、デフォルト引数
+  type Family<Parent extends HasName = Human, Child extends HasName = Human> = {
+    mother: Parent;
+    father: Parent;
+    child: Child;
+  };
+  const mother: Human = { name: "haha", bloodType: "A" };
+  const father: Human = { name: "chichi", bloodType: "AB" };
+  const child: Animal = { name: "Pochi", species: "dog" };
+  const tanakaKe: Family<Human, Animal> = { mother, father, child };
+  console.log(tanakaKe);
+}
