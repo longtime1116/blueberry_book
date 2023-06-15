@@ -234,48 +234,123 @@ namespace Chapter3_4 {
 }
 
 namespace Chapter3_5 {
-  const arr1: number[] = [1, 2, 3];
-  const arr2: (string | number)[] = [4, "5", 2 * 3];
-  const arr3 = [...arr1, ...arr2];
-  console.log(arr3);
-  // ↓以下の二つの書き方は同じことを意味するが、複雑な型を表現する場合は前者の書き方をする、という書き分け流派が存在する。
-  const arr4: Array<{ name: string }> = [
-    { name: "Tanaka" },
-    { name: "Sato" },
-    { name: "Suzuki" },
-  ];
-  const arr5: { name: string }[] = [
-    { name: "Tanaka" },
-    { name: "Sato" },
-    { name: "Suzuki" },
-  ];
-  console.log(arr4, arr5);
-  // 読み取り専用配列
-  const arr6: readonly number[] = [1, 2, 3];
-  // arr[1] = 10; // エラー！
-  // console.log(arr6[-1]); // undefined。末尾にアクセスする-1表記はできない
-  // push, includes, indexOf, slice, concat
-  // length は method ではなくプロパティ
-  // for-of でイテレート
-  for (const elm of arr6) {
-    console.log(elm);
-  }
-  // tuple
-  let tuple: [string, number] = ["foo", 0];
-  tuple = ["bar", -1];
-  tuple[1] = 100;
-  console.log(tuple);
-  // tuple の場合は、存在しない要素にインデックスアクセスをしようとするとコンパイルエラーが出る！arrayの場合は出ない。pushとかされうるから。
-  // array の場合は、存在しない要素にアクセスしようとすると undefined が返るので、型安全性が壊れてしまう！！
-  // なるべくインデックスアクセスは使わないようにする。tupleでいいときはtupleを使う
-  // tuple[100] = 100;
-  // const arr7 = [1, 2, 3];
-  // console.log(arr7[101]);
+  if (false) {
+    const arr1: number[] = [1, 2, 3];
+    const arr2: (string | number)[] = [4, "5", 2 * 3];
+    const arr3 = [...arr1, ...arr2];
+    console.log(arr3);
+    // ↓以下の二つの書き方は同じことを意味するが、複雑な型を表現する場合は前者の書き方をする、という書き分け流派が存在する。
+    const arr4: Array<{ name: string }> = [
+      { name: "Tanaka" },
+      { name: "Sato" },
+      { name: "Suzuki" },
+    ];
+    const arr5: { name: string }[] = [
+      { name: "Tanaka" },
+      { name: "Sato" },
+      { name: "Suzuki" },
+    ];
+    console.log(arr4, arr5);
+    // 読み取り専用配列
+    const arr6: readonly number[] = [1, 2, 3];
+    // arr[1] = 10; // エラー！
+    // console.log(arr6[-1]); // undefined。末尾にアクセスする-1表記はできない
+    // push, includes, indexOf, slice, concat
+    // length は method ではなくプロパティ
+    // for-of でイテレート
+    for (const elm of arr6) {
+      console.log(elm);
+    }
+    // tuple
+    let tuple: [string, number] = ["foo", 0];
+    tuple = ["bar", -1];
+    tuple[1] = 100;
+    console.log(tuple);
+    // tuple の場合は、存在しない要素にインデックスアクセスをしようとするとコンパイルエラーが出る！arrayの場合は出ない。pushとかされうるから。
+    // array の場合は、存在しない要素にアクセスしようとすると undefined が返るので、型安全性が壊れてしまう！！
+    // なるべくインデックスアクセスは使わないようにする。tupleでいいときはtupleを使う
+    // tuple[100] = 100;
+    // const arr7 = [1, 2, 3];
+    // console.log(arr7[101]);
 
-  // ラベル付きタプル型というものもあるが、アクセス時にはhoge.nameのようにできるわけではなく単にラベルがつくだけ。
-  // readonly をつけると読み取り専用になる。
-  type User = readonly [name: string, age: number];
-  const hoge: User = ["hoge", 10];
-  // hoge[1]++; // エラー！
-  console.log(hoge[0]);
+    // ラベル付きタプル型というものもあるが、アクセス時にはhoge.nameのようにできるわけではなく単にラベルがつくだけ。
+    // readonly をつけると読み取り専用になる。
+    type User = readonly [name: string, age: number];
+    const hoge: User = ["hoge", 10];
+    // hoge[1]++; // エラー！
+    console.log(hoge[0]);
+  }
+}
+namespace Chapter3_6 {
+  // 分割代入
+  const user = {
+    name: "hoge",
+    age: 100,
+    phoneNumber: "08000000000",
+    creator: {
+      penName: "Foo",
+    },
+    favoriteNumber: [2, 3, 5, 7, 11, 13],
+  };
+  // 分割代入では型注釈を与えることができない。
+  // ネストしていても取れる。
+  const {
+    name,
+    age: nenrei,
+    creator: { penName },
+  } = user;
+  console.log(name, nenrei, penName);
+  // 配列でも可能
+  const arr1: number[] = [1, 2, 3, 4, 5];
+  const [a, b, c] = arr1;
+  console.log(a, b, c);
+  const {
+    // ,をつけるとスキップできる
+    favoriteNumber: [, secondPrime, , fourthPrime],
+  } = user;
+  console.log(secondPrime, fourthPrime);
+  const arr2 = [{ name1: "foo" }, { name1: "bar" }, { name1: "baz" }];
+  // 配列の一つ目をスキップして、二つ目のオブジェクトのname1を取得
+  const [, { name1 }] = arr2;
+  console.log(name1);
+  // もちろんtupleも。
+  const tuple: [string, number] = ["hoge", 10];
+  const [, age2] = tuple;
+  console.log(age2);
+
+  // デフォルト値の指定は、undefinedの時に設定される
+  type Obj = { foo?: number };
+  const obj1: Obj = {};
+  const obj2: Obj = { foo: 8 };
+  const { foo = 500 } = obj1;
+  const { foo: bar = 500 } = obj2;
+  // bar は8。
+  console.log(foo, bar);
+
+  // nullの時は、デフォルト値は設定されない。上記のように、Objの型定義的にfooはnumber|undefinedなので、nullにはなり得ないようにするとわかりやすい
+  // ??演算子はnullとundefinedの時だけだし、このundefinedの時のみ適用されるという仕様は珍しいので注意。
+  const obj3 = { baz: null };
+  const { baz = 400 } = obj3;
+  console.log(baz); // nullのまま！
+
+  type NestedObj = {
+    obj?: {
+      hoge: number;
+    };
+  };
+  const nested1: NestedObj = {
+    obj: {
+      hoge: 123,
+    },
+  };
+  const nested2: NestedObj = {};
+  // obj は存在しない可能性があるので、もしも存在しないときに備えてデフォルト値を設定しておかないとコンパイルエラーになる
+  const { obj: { hoge: hoge1 } = { hoge: 1000 } } = nested1;
+  const { obj: { hoge: hoge2 } = { hoge: 1000 } } = nested2;
+  console.log(hoge1, hoge2);
+
+  // restパターン。配列でも利用可能
+  const obj4 = { a: 1, b: 2, c: 3, d: 4 };
+  const { a: first, b: second, ...restObj } = obj4;
+  console.log(first, second, restObj);
 }
