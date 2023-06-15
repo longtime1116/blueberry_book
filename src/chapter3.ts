@@ -196,34 +196,86 @@ namespace Chapter3 {
   }
 }
 namespace Chapter3_4 {
-  // シンプルな例
-  type User<T> = {
-    name: string;
-    child: T;
-  };
-  const bloodTypeList = ["A", "B", "O", "AB"] as const;
-  type BloodType = (typeof bloodTypeList)[number];
-  type Human = {
-    name: string;
-    bloodType: BloodType;
-  };
-  type Animal = {
-    name: string;
-    species: string;
-  };
-  type HasName = {
-    name: string;
-  };
-  // "A extends B" は、「AはBの部分型でなければならない」という制約。
-  // "Parent = Human" は、デフォルト引数
-  type Family<Parent extends HasName = Human, Child extends HasName = Human> = {
-    mother: Parent;
-    father: Parent;
-    child: Child;
-  };
-  const mother: Human = { name: "haha", bloodType: "A" };
-  const father: Human = { name: "chichi", bloodType: "AB" };
-  const child: Animal = { name: "Pochi", species: "dog" };
-  const tanakaKe: Family<Human, Animal> = { mother, father, child };
-  console.log(tanakaKe);
+  if (false) {
+    // シンプルな例
+    type User<T> = {
+      name: string;
+      child: T;
+    };
+    const bloodTypeList = ["A", "B", "O", "AB"] as const;
+    type BloodType = (typeof bloodTypeList)[number];
+    type Human = {
+      name: string;
+      bloodType: BloodType;
+    };
+    type Animal = {
+      name: string;
+      species: string;
+    };
+    type HasName = {
+      name: string;
+    };
+    // "A extends B" は、「AはBの部分型でなければならない」という制約。
+    // "Parent = Human" は、デフォルト引数
+    type Family<
+      Parent extends HasName = Human,
+      Child extends HasName = Human
+    > = {
+      mother: Parent;
+      father: Parent;
+      child: Child;
+    };
+    const mother: Human = { name: "haha", bloodType: "A" };
+    const father: Human = { name: "chichi", bloodType: "AB" };
+    const child: Animal = { name: "Pochi", species: "dog" };
+    const tanakaKe: Family<Human, Animal> = { mother, father, child };
+    console.log(tanakaKe);
+  }
+}
+
+namespace Chapter3_5 {
+  const arr1: number[] = [1, 2, 3];
+  const arr2: (string | number)[] = [4, "5", 2 * 3];
+  const arr3 = [...arr1, ...arr2];
+  console.log(arr3);
+  // ↓以下の二つの書き方は同じことを意味するが、複雑な型を表現する場合は前者の書き方をする、という書き分け流派が存在する。
+  const arr4: Array<{ name: string }> = [
+    { name: "Tanaka" },
+    { name: "Sato" },
+    { name: "Suzuki" },
+  ];
+  const arr5: { name: string }[] = [
+    { name: "Tanaka" },
+    { name: "Sato" },
+    { name: "Suzuki" },
+  ];
+  console.log(arr4, arr5);
+  // 読み取り専用配列
+  const arr6: readonly number[] = [1, 2, 3];
+  // arr[1] = 10; // エラー！
+  // console.log(arr6[-1]); // undefined。末尾にアクセスする-1表記はできない
+  // push, includes, indexOf, slice, concat
+  // length は method ではなくプロパティ
+  // for-of でイテレート
+  for (const elm of arr6) {
+    console.log(elm);
+  }
+  // tuple
+  let tuple: [string, number] = ["foo", 0];
+  tuple = ["bar", -1];
+  tuple[1] = 100;
+  console.log(tuple);
+  // tuple の場合は、存在しない要素にインデックスアクセスをしようとするとコンパイルエラーが出る！arrayの場合は出ない。pushとかされうるから。
+  // array の場合は、存在しない要素にアクセスしようとすると undefined が返るので、型安全性が壊れてしまう！！
+  // なるべくインデックスアクセスは使わないようにする。tupleでいいときはtupleを使う
+  // tuple[100] = 100;
+  // const arr7 = [1, 2, 3];
+  // console.log(arr7[101]);
+
+  // ラベル付きタプル型というものもあるが、アクセス時にはhoge.nameのようにできるわけではなく単にラベルがつくだけ。
+  // readonly をつけると読み取り専用になる。
+  type User = readonly [name: string, age: number];
+  const hoge: User = ["hoge", 10];
+  // hoge[1]++; // エラー！
+  console.log(hoge[0]);
 }
