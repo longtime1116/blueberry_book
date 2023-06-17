@@ -282,75 +282,142 @@ namespace Chapter3_5 {
   }
 }
 namespace Chapter3_6 {
-  // 分割代入
-  const user = {
-    name: "hoge",
-    age: 100,
-    phoneNumber: "08000000000",
-    creator: {
-      penName: "Foo",
-    },
-    favoriteNumber: [2, 3, 5, 7, 11, 13],
-  };
-  // 分割代入では型注釈を与えることができない。
-  // ネストしていても取れる。
-  const {
-    name,
-    age: nenrei,
-    creator: { penName },
-  } = user;
-  console.log(name, nenrei, penName);
-  // 配列でも可能
-  const arr1: number[] = [1, 2, 3, 4, 5];
-  const [a, b, c] = arr1;
-  console.log(a, b, c);
-  const {
-    // ,をつけるとスキップできる
-    favoriteNumber: [, secondPrime, , fourthPrime],
-  } = user;
-  console.log(secondPrime, fourthPrime);
-  const arr2 = [{ name1: "foo" }, { name1: "bar" }, { name1: "baz" }];
-  // 配列の一つ目をスキップして、二つ目のオブジェクトのname1を取得
-  const [, { name1 }] = arr2;
-  console.log(name1);
-  // もちろんtupleも。
-  const tuple: [string, number] = ["hoge", 10];
-  const [, age2] = tuple;
-  console.log(age2);
-
-  // デフォルト値の指定は、undefinedの時に設定される
-  type Obj = { foo?: number };
-  const obj1: Obj = {};
-  const obj2: Obj = { foo: 8 };
-  const { foo = 500 } = obj1;
-  const { foo: bar = 500 } = obj2;
-  // bar は8。
-  console.log(foo, bar);
-
-  // nullの時は、デフォルト値は設定されない。上記のように、Objの型定義的にfooはnumber|undefinedなので、nullにはなり得ないようにするとわかりやすい
-  // ??演算子はnullとundefinedの時だけだし、このundefinedの時のみ適用されるという仕様は珍しいので注意。
-  const obj3 = { baz: null };
-  const { baz = 400 } = obj3;
-  console.log(baz); // nullのまま！
-
-  type NestedObj = {
-    obj?: {
-      hoge: number;
+  if (false) {
+    // 分割代入
+    const user = {
+      name: "hoge",
+      age: 100,
+      phoneNumber: "08000000000",
+      creator: {
+        penName: "Foo",
+      },
+      favoriteNumber: [2, 3, 5, 7, 11, 13],
     };
-  };
-  const nested1: NestedObj = {
-    obj: {
-      hoge: 123,
-    },
-  };
-  const nested2: NestedObj = {};
-  // obj は存在しない可能性があるので、もしも存在しないときに備えてデフォルト値を設定しておかないとコンパイルエラーになる
-  const { obj: { hoge: hoge1 } = { hoge: 1000 } } = nested1;
-  const { obj: { hoge: hoge2 } = { hoge: 1000 } } = nested2;
-  console.log(hoge1, hoge2);
+    // 分割代入では型注釈を与えることができない。
+    // ネストしていても取れる。
+    const {
+      name,
+      age: nenrei,
+      creator: { penName },
+    } = user;
+    console.log(name, nenrei, penName);
+    // 配列でも可能
+    const arr1: number[] = [1, 2, 3, 4, 5];
+    const [a, b, c] = arr1;
+    console.log(a, b, c);
+    const {
+      // ,をつけるとスキップできる
+      favoriteNumber: [, secondPrime, , fourthPrime],
+    } = user;
+    console.log(secondPrime, fourthPrime);
+    const arr2 = [{ name1: "foo" }, { name1: "bar" }, { name1: "baz" }];
+    // 配列の一つ目をスキップして、二つ目のオブジェクトのname1を取得
+    const [, { name1 }] = arr2;
+    console.log(name1);
+    // もちろんtupleも。
+    const tuple: [string, number] = ["hoge", 10];
+    const [, age2] = tuple;
+    console.log(age2);
 
-  // restパターン。配列でも利用可能
-  const obj4 = { a: 1, b: 2, c: 3, d: 4 };
-  const { a: first, b: second, ...restObj } = obj4;
-  console.log(first, second, restObj);
+    // デフォルト値の指定は、undefinedの時に設定される
+    type Obj = { foo?: number };
+    const obj1: Obj = {};
+    const obj2: Obj = { foo: 8 };
+    const { foo = 500 } = obj1;
+    const { foo: bar = 500 } = obj2;
+    // bar は8。
+    console.log(foo, bar);
+
+    // nullの時は、デフォルト値は設定されない。上記のように、Objの型定義的にfooはnumber|undefinedなので、nullにはなり得ないようにするとわかりやすい
+    // ??演算子はnullとundefinedの時だけだし、このundefinedの時のみ適用されるという仕様は珍しいので注意。
+    const obj3 = { baz: null };
+    const { baz = 400 } = obj3;
+    console.log(baz); // nullのまま！
+
+    type NestedObj = {
+      obj?: {
+        hoge: number;
+      };
+    };
+    const nested1: NestedObj = {
+      obj: {
+        hoge: 123,
+      },
+    };
+    const nested2: NestedObj = {};
+    // obj は存在しない可能性があるので、もしも存在しないときに備えてデフォルト値を設定しておかないとコンパイルエラーになる
+    const { obj: { hoge: hoge1 } = { hoge: 1000 } } = nested1;
+    const { obj: { hoge: hoge2 } = { hoge: 1000 } } = nested2;
+    console.log(hoge1, hoge2);
+
+    // restパターン。配列でも利用可能
+    const obj4 = { a: 1, b: 2, c: 3, d: 4 };
+    const { a: first, b: second, ...restObj } = obj4;
+    console.log(first, second, restObj);
+  }
+}
+
+namespace Chapter3_7 {
+  // Date。Temporalが主流になっているかも？
+  const d1 = new Date();
+  console.log(d1);
+  const timeNum1 = d1.getTime();
+  console.log(timeNum1); // 数値
+  console.log(new Date(timeNum1)); // 復元！
+  console.log(Date.now()); // 数値
+  const d2 = new Date("2020-02-29T15:00:00+09:00");
+  console.log(d2); // 閏年の2/29
+  d2.setFullYear(2021);
+  console.log(d2); // ちゃんと3/1になっている！
+
+  // 正規表現
+  const r = /ab+c/;
+  console.log(r.test("aaabcccc"));
+  // replace, match, キャプチャリンググループ,名前付きキャプチャリンググループ...
+
+  // Mapオブジェクト, Setオブジェクト
+  const map: Map<string, number> = new Map();
+  map.set("foo", 1234);
+  console.log(map);
+  console.log(map.get("foo")); // get の戻り値の型は number|undefined
+  console.log(map.has("foo"));
+  console.log(map.delete("foo"));
+  console.log(map.has("foo"));
+  console.log(map.get("foo"));
+  map.clear();
+  console.log(map);
+  map.set("a", 13);
+  map.set("c", 11);
+  map.set("b", 12);
+  map.set("d", 10);
+  // keys や values もある
+  for (const e of map.entries()) {
+    console.log(e);
+  }
+  const set: Set<number> = new Set();
+  set.add(10);
+  set.add(11);
+  set.add(12);
+  console.log(set.has(12));
+
+  // WeakMap, WeakSet もある。
+  // キーとしてオブジェクトしか使えない。また、keys/values/entriesといった列挙系のメソッドが存在しない。
+  // キーのオブジェクトに対する参照が弱参照である。
+  // すなわち、キーとなったオブジェクトへの参照をそのWeakMap/WeakSet以外が持たなくなった時に
+  // ガベージコレクションが実行されるが、もはやWeakMap/WeakSetに対してそのキーを使って参照する術を持たない(何せ参照を持たないのだから)ので、
+  // ガベージコレクションを実行することが正当化される。
+
+  // プリミティブなのにプロパティがあるように見えるケース
+  type HasLength = { length: number };
+  const lengthObj: HasLength = "foobar"; // string は length を持つので代入できる
+  console.log(lengthObj);
+
+  // {} という型。プロパティが1つもないオブジェクト型。nullとundefined以外のあらゆる値を受け入れる
+  let val: {} = 123;
+  val = "foobar";
+  val = 123;
+  // エラーになる！
+  // val = 100 * val;
+  // val = null;
+  // val = undefined;
 }
