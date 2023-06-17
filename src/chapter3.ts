@@ -1,3 +1,4 @@
+import { createInterface } from "readline";
 namespace Chapter3 {
   if (false) {
     const obj1 = {
@@ -358,66 +359,107 @@ namespace Chapter3_6 {
 }
 
 namespace Chapter3_7 {
-  // Date。Temporalが主流になっているかも？
-  const d1 = new Date();
-  console.log(d1);
-  const timeNum1 = d1.getTime();
-  console.log(timeNum1); // 数値
-  console.log(new Date(timeNum1)); // 復元！
-  console.log(Date.now()); // 数値
-  const d2 = new Date("2020-02-29T15:00:00+09:00");
-  console.log(d2); // 閏年の2/29
-  d2.setFullYear(2021);
-  console.log(d2); // ちゃんと3/1になっている！
+  if (false) {
+    // Date。Temporalが主流になっているかも？
+    const d1 = new Date();
+    console.log(d1);
+    const timeNum1 = d1.getTime();
+    console.log(timeNum1); // 数値
+    console.log(new Date(timeNum1)); // 復元！
+    console.log(Date.now()); // 数値
+    const d2 = new Date("2020-02-29T15:00:00+09:00");
+    console.log(d2); // 閏年の2/29
+    d2.setFullYear(2021);
+    console.log(d2); // ちゃんと3/1になっている！
 
-  // 正規表現
-  const r = /ab+c/;
-  console.log(r.test("aaabcccc"));
-  // replace, match, キャプチャリンググループ,名前付きキャプチャリンググループ...
+    // 正規表現
+    const r = /ab+c/;
+    console.log(r.test("aaabcccc"));
+    // replace, match, キャプチャリンググループ,名前付きキャプチャリンググループ...
 
-  // Mapオブジェクト, Setオブジェクト
-  const map: Map<string, number> = new Map();
-  map.set("foo", 1234);
-  console.log(map);
-  console.log(map.get("foo")); // get の戻り値の型は number|undefined
-  console.log(map.has("foo"));
-  console.log(map.delete("foo"));
-  console.log(map.has("foo"));
-  console.log(map.get("foo"));
-  map.clear();
-  console.log(map);
-  map.set("a", 13);
-  map.set("c", 11);
-  map.set("b", 12);
-  map.set("d", 10);
-  // keys や values もある
-  for (const e of map.entries()) {
-    console.log(e);
+    // Mapオブジェクト, Setオブジェクト
+    const map: Map<string, number> = new Map();
+    map.set("foo", 1234);
+    console.log(map);
+    console.log(map.get("foo")); // get の戻り値の型は number|undefined
+    console.log(map.has("foo"));
+    console.log(map.delete("foo"));
+    console.log(map.has("foo"));
+    console.log(map.get("foo"));
+    map.clear();
+    console.log(map);
+    map.set("a", 13);
+    map.set("c", 11);
+    map.set("b", 12);
+    map.set("d", 10);
+    // keys や values もある
+    for (const e of map.entries()) {
+      console.log(e);
+    }
+    const set: Set<number> = new Set();
+    set.add(10);
+    set.add(11);
+    set.add(12);
+    console.log(set.has(12));
+
+    // WeakMap, WeakSet もある。
+    // キーとしてオブジェクトしか使えない。また、keys/values/entriesといった列挙系のメソッドが存在しない。
+    // キーのオブジェクトに対する参照が弱参照である。
+    // すなわち、キーとなったオブジェクトへの参照をそのWeakMap/WeakSet以外が持たなくなった時に
+    // ガベージコレクションが実行されるが、もはやWeakMap/WeakSetに対してそのキーを使って参照する術を持たない(何せ参照を持たないのだから)ので、
+    // ガベージコレクションを実行することが正当化される。
+
+    // プリミティブなのにプロパティがあるように見えるケース
+    type HasLength = { length: number };
+    const lengthObj: HasLength = "foobar"; // string は length を持つので代入できる
+    console.log(lengthObj);
+
+    // {} という型。プロパティが1つもないオブジェクト型。nullとundefined以外のあらゆる値を受け入れる
+    let val: {} = 123;
+    val = "foobar";
+    val = 123;
+    // エラーになる！
+    // val = 100 * val;
+    // val = null;
+    // val = undefined;
   }
-  const set: Set<number> = new Set();
-  set.add(10);
-  set.add(11);
-  set.add(12);
-  console.log(set.has(12));
+}
 
-  // WeakMap, WeakSet もある。
-  // キーとしてオブジェクトしか使えない。また、keys/values/entriesといった列挙系のメソッドが存在しない。
-  // キーのオブジェクトに対する参照が弱参照である。
-  // すなわち、キーとなったオブジェクトへの参照をそのWeakMap/WeakSet以外が持たなくなった時に
-  // ガベージコレクションが実行されるが、もはやWeakMap/WeakSetに対してそのキーを使って参照する術を持たない(何せ参照を持たないのだから)ので、
-  // ガベージコレクションを実行することが正当化される。
+namespace Chapter3_8 {
+  // map とか使いたいところだけど、ここまでの知識で書く
+  type User = {
+    name: string;
+    age: number;
+    premiumUser: boolean;
+  };
+  const data: string = `
+    Sato, 28, 1
+    Tanaka, 22, 0
+    Yamada, 44, 1`;
 
-  // プリミティブなのにプロパティがあるように見えるケース
-  type HasLength = { length: number };
-  const lengthObj: HasLength = "foobar"; // string は length を持つので代入できる
-  console.log(lengthObj);
+  const users: User[] = [];
+  const lines = data.split("\n");
+  for (const line of lines) {
+    if (line === "") {
+      continue;
+    }
+    const [name, ageString, premiumUserString] = line.split(",");
+    const age = Number(ageString);
+    const premiumUser = Boolean(Number(premiumUserString));
+    users.push({
+      name,
+      age,
+      premiumUser,
+    });
+  }
 
-  // {} という型。プロパティが1つもないオブジェクト型。nullとundefined以外のあらゆる値を受け入れる
-  let val: {} = 123;
-  val = "foobar";
-  val = 123;
-  // エラーになる！
-  // val = 100 * val;
-  // val = null;
-  // val = undefined;
+  for (const user of users) {
+    if (user.premiumUser) {
+      console.log(`${user.name}(${user.age})はプレミアムユーザーです`);
+    } else {
+      console.log(
+        `${user.name}(${user.age})はプレミアムユーザーではありません`
+      );
+    }
+  }
 }
