@@ -129,5 +129,51 @@ namespace Chapter4_2 {
 
 namespace Chapter4_3 {
   if (false) {
+    type HasName = {
+      name: string;
+    };
+    type HasNameAndAge = {
+      name: string;
+      age: number;
+    };
+    const fromAge = (age: number): HasNameAndAge => ({
+      name: "Hoge",
+      age,
+    });
+    // 実体の関数 fromAge の返り値の型 HasNameAndAge は f の返り値の部分型なので、代入可能。
+    const f: (age: number) => HasName = fromAge;
+    console.log(f(100));
+    // どんな型を返す関数型も、void型を返す関数型の部分型として扱われる
+    const g: (age: number) => void = fromAge;
+    console.log(g(100)); // void 型を返すという型になっているが、実際はfromAgeが入っているので、HasNameAndAge型のオブジェクトが返っている。というかvoidなんだからこういう使い方をしないはず。
+    //
+    //
+
+    // 実体の関数 showName の引数の型は HasName であり、nameは必要だがageは必要ない。
+    // ある関数 h に showName を代入するということは、h(obj); という形で呼び出すということが可能であるということである。
+    // そのためには obj は HasName あるいはその部分型であれば良い。
+    // したがって、ここで h の引数の型を HasNameAndAge とすると、h に showName を代入できる。
+    // すなわち、showName は h の部分型であると言える。
+    const showName = (obj: HasName) => {
+      console.log(obj.name);
+    };
+    const h: (obj: HasNameAndAge) => void = showName;
+    // 共変の位置にある関数型の返り値の型は順方向の部分型関係が成立し、反変の位置にある関数型の引数の型は逆方向。
+    // returnName の引数は name さえ持っていればいいので、name以外の何かを持っていてもいい。 HasNameAndAgeでもOK。
+    // returnName の返り値は name と age を返すので、name と age 以外の何かを求められなければいい。HasNameならOK。
+    const returnName = ({ name }: HasName): HasNameAndAge => ({
+      name: name,
+      age: name.length,
+    });
+    const f2: (obj: HasNameAndAge) => HasName = returnName;
+    console.log(f2({ name: "a", age: 2 }));
+
+    // 引数の数による部分型
+    type SingleArgFunc = (arg: number) => number;
+    type DoubleArgFunc = (arg1: number, arg2: number) => number;
+    const square: SingleArgFunc = (num: number) => num * 2;
+    const sum: DoubleArgFunc = (num1: number, num2: number) => num1 + num2;
+    const someDoubleArgFunc: DoubleArgFunc = square;
+    console.log(someDoubleArgFunc(10, 3)); // 3 はもちろん使われない
   }
 }
