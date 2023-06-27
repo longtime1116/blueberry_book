@@ -177,3 +177,62 @@ namespace Chapter4_3 {
     console.log(someDoubleArgFunc(10, 3)); // 3 はもちろん使われない
   }
 }
+
+namespace Chapter4_4 {
+  if (false) {
+    // ジェネリクスは型引数を受け取る関数を作る機能
+    function repeat<T>(element: T, length: number): T[] {
+      const result: T[] = [];
+      for (let i = 0; i < length; i++) {
+        result.push(element);
+      }
+      return result;
+    }
+    // マウスオーバーすると、それぞれの型情報が見られる
+    console.log(repeat<string>("a", 5));
+    console.log(repeat("a", 5));
+    console.log(repeat<number>(1, 4));
+
+    const pair = <L, R>(left: L, right: R) => [left, right];
+    const p = pair<string, number>("taro", 5);
+
+    // extends
+    function repeat2<T extends { name: string }>(
+      element: T,
+      length: number
+    ): T[] {
+      const result: T[] = [];
+      for (let i = 0; i < length; i++) {
+        result.push(element);
+      }
+      return result;
+    }
+    type HasNameAndAge = {
+      name: string;
+      age: number;
+    };
+    const taro: HasNameAndAge = { name: "taro", age: 22 };
+    console.log(repeat2(taro, 3));
+  }
+}
+
+namespace Chapter4_5 {
+  if (false) {
+    if (true) {
+      // このinIfは if 文を抜けると参照できなくなる。Rubyではこうはならない
+      const inIf = "x";
+      // varはブロックスコープに属さない。var
+      var inIfVar = "y";
+    }
+    // console.log(inIf); // コンパイルエラー！
+    console.log(inIfVar);
+
+    // var は複数回宣言できる
+    var inIfVar = "z";
+    console.log(inIfVar);
+  }
+}
+namespace Chapter4_6 {
+  if (false) {
+  }
+}
