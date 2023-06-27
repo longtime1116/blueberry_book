@@ -104,5 +104,30 @@ namespace Chapter4_1 {
   }
 }
 namespace Chapter4_2 {
-  //
+  if (false) {
+    // 関数型
+    // ここで、repeatNumという引数名はカタチェックには影響しない。あくまでドキュメンテーション目的
+    type F = (repeatNum: number) => string;
+    const xRepeat: F = (num: number): string => "x".repeat(num);
+    const yRepeat: F = (num: number) => "y".repeat(num);
+    console.log(xRepeat(5));
+    console.log(yRepeat(5));
+
+    // コールシグネチャによる関数型の表現。わざわざ関数オブジェクトに独自のプロパティを持たせる必要がないことが多いので、あまり使われないらしい
+    type MyFunc = {
+      isUsed: boolean;
+      (arg: number): void;
+    };
+    const double: MyFunc = (arg: number) => {
+      console.log(arg * 2);
+    };
+    double(1000);
+    double.isUsed = true;
+    console.log(double.isUsed);
+  }
+}
+
+namespace Chapter4_3 {
+  if (false) {
+  }
 }
