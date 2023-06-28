@@ -71,5 +71,29 @@ namespace Chapter5_1_11 {
 }
 
 namespace Chapter5_2 {
-  //
+  // class 宣言をすると、その変数名の型も作られる
+  class User {
+    name: string = "";
+    age: number = 0;
+    isAdult(): boolean {
+      return this.age >= 20;
+    }
+  }
+  const taro = new User();
+  // あくまでUser型は、「string型のプロパティnameとnumberのageと()=>boolean型のisAdultメソッドを持つ」ことが特徴であり、
+  // new user という式はそのような特徴を持ったオブジェクトを作る便利な手段にすぎない。
+  const jiro: User = {
+    name: "jiro",
+    age: 10,
+    isAdult: () => false,
+  };
+  // 以下のようにクラス式では（無名クラス?を代入しているだけでは）、型は当然作られない
+  const Person = class {
+    name: string = "";
+    age: number = 0;
+  };
+
+  // instance of
+  console.log(taro instanceof User);
+  console.log(jiro instanceof User); //  jiro は User 型だが、Userクラスのインスタンスではない！
 }
