@@ -232,7 +232,46 @@ namespace Chapter4_5 {
     console.log(inIfVar);
   }
 }
-namespace Chapter4_6 {
-  if (false) {
+namespace Chapter4_6_1 {
+  function getFizzBuzzElement(num: number): string {
+    if (num % 15 == 0) {
+      return "FizzBuzz";
+    } else if (num % 3 === 0) {
+      return "Fizz";
+    } else if (num % 5 === 0) {
+      return "Buzz";
+    } else {
+      return num.toString();
+    }
   }
+  function sequense(from: number, to: number): number[] {
+    const result: number[] = [];
+    for (let i = from; i <= to; i++) {
+      result.push(i);
+    }
+    return result;
+  }
+  function FizzBuzz(maxNum: number): void {
+    // Rubyっぽい書き方かも。sequenseみたいな関数が標準ライブラリで提供されていない以上、こういう書き方は自然ではないのかも。
+    // sequense(1, maxNum).map((i) => console.log(getFizzBuzzElement(i)));
+    // 本ではこっち
+    for (const i of sequense(1, maxNum)) {
+      const message = getFizzBuzzElement(i);
+      console.log(message);
+    }
+  }
+  //FizzBuzz(16);
+}
+
+namespace Chapter4_6_3 {
+  function map<T, U>(elements: T[], callback: (arg: T) => U) {
+    const result: U[] = [];
+    for (const e of elements) {
+      result.push(callback(e));
+    }
+    return result;
+  }
+  console.log(
+    map<number, string>([1, 1, 2, 3, 5, 8, 13], (x) => (x * 10).toString())
+  );
 }
