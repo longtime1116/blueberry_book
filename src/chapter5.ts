@@ -97,3 +97,49 @@ namespace Chapter5_2 {
   console.log(taro instanceof User);
   console.log(jiro instanceof User); //  jiro は User 型だが、Userクラスのインスタンスではない！
 }
+
+namespace Chapter5_3 {
+  type HasName = {
+    name: string;
+  };
+  // implements によるクラスの型チェック
+  class User implements HasName {
+    name: string;
+    protected age: number;
+    constructor(name: string, age: number) {
+      this.name = name;
+      this.age = age;
+    }
+    public isAdult(): boolean {
+      return this.age >= 20;
+    }
+  }
+  class PremiumUser extends User {
+    rank: number;
+    constructor(name: string, age: number, rank: number = 1) {
+      // super で親のコンストラクタを呼び出す
+      super(name, age + 1);
+      // このthisは、親クラスのコンストラクタを呼び出した後でないとコンパイルエラーになる
+      this.rank = rank;
+    }
+    // override 修飾子はあってもなくてもいい。TSの仕様。
+    // ただし、noImplicitOverride コンパイラオプションと組み合わせると必須になる。親のisAdultを変えた時にこちらにエラーを発生させられる
+    public override isAdult(): boolean {
+      // これは age が private でも使える
+      // return true;
+      // age が private だと #age にアクセスできないのでprotectedにした
+      // ただし、子クラスで更新もできるようになってしまうので、親クラスでの前提が崩れてしまったりするので注意が必要
+      return this.age >= 10;
+    }
+  }
+  function greetMessage(u: User): string {
+    return `Hello, ${u.name}-san`;
+  }
+  const taro = new PremiumUser("taro", 18);
+  console.log(taro.rank);
+  console.log(taro.name);
+  // オーバーライドしているので true
+  console.log(taro.isAdult());
+  // 子クラスも渡せる
+  console.log(greetMessage(taro));
+}
