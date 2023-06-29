@@ -202,3 +202,53 @@ namespace Chapter5_4 {
   //};
   //console.log(user.isAdult());
 }
+
+namespace Chapter5_5 {
+  try {
+    console.log("エラーを発生させます");
+    throwError();
+    console.log("エラーを発生させました");
+  } catch (err) {
+    console.log("エラーをキャッチしました");
+    console.log(err);
+  } finally {
+    console.log("finally");
+  }
+  console.log("終わり");
+  function throwError() {
+    const error = new Error("エラーが発生しました！！！");
+    throw error;
+  }
+  // 例外を投げるべき時と、失敗を表す値(例えばundefined)を返して呼び出し側でチェックする時がある。
+  // 後者の方が、型システム的な面で使いやすい
+  function getAverage1(nums: number[]): number | undefined {
+    if (nums.length === 0) {
+      return undefined;
+    }
+    let sum = 0;
+    for (let i = 0; i < nums.length; i++) {
+      sum += nums[i];
+    }
+    return sum / nums.length;
+  }
+  class EmptyArrayError extends Error {}
+  function getAverage2(nums: number[]): number {
+    if (nums.length === 0) {
+      try {
+        // throw はなんでも投げられる
+        // throw 100;
+        throw new EmptyArrayError("1つ以上の要素を求む");
+      } catch (err) {
+        // このerrがunknown型になってしまう
+        console.log(err);
+        return 1;
+      }
+    }
+    let sum = 0;
+    for (let i = 0; i < nums.length; i++) {
+      sum += nums[i];
+    }
+    return sum / nums.length;
+  }
+  getAverage2([]);
+}
