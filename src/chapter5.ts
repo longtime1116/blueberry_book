@@ -252,3 +252,49 @@ namespace Chapter5_5 {
   }
   getAverage2([]);
 }
+
+namespace Chapter5_6_1_before {
+  type User = {
+    name: string;
+    age: number;
+  };
+  function createuser(name: string, age: number): User {
+    if (name === "") {
+      throw new Error("名前は空にできません");
+    }
+    return { name, age };
+  }
+  function getMessage(user: User, message: string): string {
+    return `${user.name}(${user.age}) : ${message}`;
+  }
+  const taro = createuser("taro", 20);
+  console.log(getMessage(taro, "こんにちは"));
+}
+
+namespace Chapter5_6_1_after {
+  class User {
+    readonly #name: string;
+    readonly #age: number;
+    constructor(name: string, age: number) {
+      if (name === "") {
+        throw new Error("名前は空にできません");
+      }
+      this.#name = name;
+      this.#age = age;
+    }
+    getMessage(message: string): string {
+      return `${this.#name}(${this.#age}) : ${message}`;
+    }
+  }
+  const taro = new User("taro", 20);
+  console.log(taro.getMessage("こんにちは"));
+}
+
+namespace Chapter5_6_3 {
+  // 例題の書いているけど、これで createUser という名前なのは気持ち悪すぎる
+  const createUser = (name: string, age: number) => {
+    return (message: string) => `${name}(${age}) : ${message}`;
+  };
+  const getMessage = createUser("taro", 20);
+  console.log(getMessage("こんにちは"));
+}
