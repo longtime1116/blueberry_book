@@ -143,3 +143,62 @@ namespace Chapter5_3 {
   // 子クラスも渡せる
   console.log(greetMessage(taro));
 }
+
+namespace Chapter5_4 {
+  //
+  class User {
+    name: string;
+    #age: number;
+    constructor(name: string, age: number) {
+      this.name = name;
+      this.#age = age;
+    }
+    public isAdult(): boolean {
+      return this.#age >= 20;
+    }
+    // アロー関数はthisを外側の関数から受け継ぐ
+    public filterOlder(users: readonly User[]) {
+      return users.filter((u) => u.#age > this.#age);
+    }
+    // これをfunctionで書こうとすると、コンパイルエラーになる。
+    public filterOlder2(users: readonly User[]) {
+      const _this = this;
+      return users.filter(function (u: User) {
+        // エラーになる！
+        // return u.#age >= this.#age;
+
+        // thisを退避しておくというテクニックもあるが、アロー関数を使う方が良い
+        return u.#age >= _this.#age;
+      });
+    }
+  }
+  const taro = new User("taro", 20);
+  console.log(taro.isAdult());
+  const isAdult = taro.isAdult;
+  // これはランタイムエラーになる！ this が参照するものが undefined になるから。
+  // console.log(isAdult());
+
+  // apply/call を使えば、thisがjiroを参照するようになる。
+  const jiro = new User("jiro", 4);
+  // apply は引数を配列で渡す
+  console.log(isAdult.apply(jiro, []));
+  // call は引数を展開して渡す
+  console.log(isAdult.call(jiro));
+  // もちろんtaroでも使える
+  console.log(isAdult.apply(taro, []));
+  // this を bind しておくこともできる
+  const boundIsAdult = taro.isAdult.bind(taro);
+  console.log(boundIsAdult());
+  // bind している場合、call で this を渡しても無効
+  console.log(boundIsAdult.call(jiro));
+
+  // this はクラスでなくても使える
+  //const user = {
+  //  name: "taro",
+  //  age: 20,
+  //  isAdult() {
+  //    return this.age >= 20;
+  //  },
+  //};
+  //console.log(user.isAdult());
+}
