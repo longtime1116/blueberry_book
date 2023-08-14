@@ -1,3 +1,5 @@
+import { get } from "http";
+
 // ユニオン型は直和型じゃない、ということを実感するためのコーナー
 namespace UnionTest {
   namespace UnionTest1 {
@@ -216,4 +218,78 @@ namespace Chapter6_3 {
   }
   const tama: Animal = { type: "animal", species: "cat" };
   console.log(getUserName(tama));
+}
+
+namespace Chapter6_4 {
+  // lookup 型
+  type Human = {
+    type: "human";
+    name: string;
+    age: number;
+  };
+  // Human["age"]で、Human型のageプロパティの型を参照できる。lookup型
+  function setAge(human: Human, age: Human["age"]): Human {
+    return {
+      ...human,
+      age,
+    };
+  }
+  const taro: Human = { type: "human", name: "taro", age: 100 };
+  const taro2 = setAge(taro, 101);
+  console.log(taro2);
+
+  // keyof 型
+  type HumanKeys = keyof Human; // "type" | "name" | "age"
+  let key: HumanKeys = "name";
+  key = "age";
+  // "hoge" は Human の key にないのでコンパイルエラー
+  // key = "hoge";
+
+  const mmConversionTable = {
+    mm: 1,
+    m: 1e3,
+    km: 1e6,
+  };
+  const convertUnits = (
+    value: number,
+    unit: keyof typeof mmConversionTable
+  ) => {
+    const mmValue = value * mmConversionTable[unit];
+    return {
+      mm: mmValue,
+      m: mmValue / 1e3,
+      km: mmValue / 1e6,
+    };
+  };
+  console.log(convertUnits(5000, "m"));
+
+  function get<T, K extends keyof T>(obj: T, key: K): T[K] {
+    // number 型も key になりうるので、↓はコンパイルエラー
+    // const hoge: string = key;
+    return obj[key];
+  }
+  type Human2 = {
+    name: string;
+    age: number;
+  };
+  const taro3: Human2 = {
+    name: "taro",
+    age: 94,
+  };
+  // K は "name" | "age" の部分型。
+  const taroName = get(taro3, "name");
+  const taroAge = get(taro3, "age");
+  console.log(taroName, taroAge);
+  // 数値もkeyの型になりうるが、実行時には区別されない。文字列として扱われる
+  type Obj = {
+    0: string;
+    1: number;
+  };
+  const obj: Obj = {
+    0: "taro",
+    "1": 95,
+  };
+  obj["0"] = "jiro";
+  obj[1] = 59;
+  console.log(obj);
 }
