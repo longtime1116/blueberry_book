@@ -293,3 +293,41 @@ namespace Chapter6_4 {
   obj[1] = 59;
   console.log(obj);
 }
+
+namespace Chapter6_5 {
+  // as による型アサーション。できるだけ避けるべき。
+  // 式 as 型、で型だけを変化させる。
+
+  // 以下はよくない例
+  function getName(strOrNum: string | number) {
+    const str = strOrNum as string;
+    return str.toUpperCase();
+  }
+  console.log(getName("taro"));
+  // ランタイムエラーになる！
+  // console.log(getName(1));
+
+  // 良い例。しかし、6.7.2で紹介されるユーザー定義型ガードを使えば、この as すら使わずに済む
+  type Animal = {
+    tag: "animal";
+    species: string;
+  };
+  type Human = {
+    tag: "human";
+    name: string;
+  };
+  type User = Animal | Human;
+  function getNamesIfAllHuman(users: readonly User[]): string[] | undefined {
+    if (users.every((user) => user.tag === "human")) {
+      // users はここで Human しか来ないと我々はわかっている。asで型を正しくしてやれば良い。
+      return (users as Human[]).map((user) => user.name);
+    }
+    return undefined;
+  }
+
+  // as const は危険ではない！よく使う。
+  const names1 = ["Taro", "Jiro", "Sabro"]; // widening されて string 型になっている。あとから変更されるかもしれないから wideningされている。
+  const names2 = ["Taro", "Jiro", "Sabro"] as const; // readonly タプル型なので、widening する必要がない
+  // Lookup型とtypeofキーワードと as const の組み合わせ
+  type Name = (typeof names2)[number];
+}
